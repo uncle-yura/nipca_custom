@@ -1,0 +1,15 @@
+# Environment
+/venv/
+.DS_Store
+
+# Tests
+.coverage
+
+# IDE
+/.vscode
+/.idea
+
+# Caches
+__pycache__
+/.pytest_cache
+/.mypy_cache

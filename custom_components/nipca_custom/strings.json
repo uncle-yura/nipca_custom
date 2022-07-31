@@ -1,0 +1,46 @@
+{
+  "config": {
+    "error": {
+      "invalid_auth": "The authorization credentials provided are invalid."
+    },
+    "step": {
+      "user": {
+        "data": {
+          "name": "Name of the nipca device",
+          "url": "Discovered UPnP devices"
+        },
+        "description": "Select your device",
+        "title": "Discovery"
+      },
+      "auth": {
+        "data": {
+          "authentication": "Authentication type",
+          "password": "Password",
+          "username": "Username",
+          "verify_ssl": "Verify SSL"
+        },
+        "description": "Add device credentials",
+        "title": "Authentication"
+      },
+      "config": {
+        "data": {
+          "username": "Scan interval"
+        },
+        "description": "Change device properties",
+        "title": "Configuration"
+      }
+    }
+  },
+  "options": {
+    "error": {},
+    "step": {
+      "init": {
+        "data": {
+          "scan_interval": "Scan interval"
+        },
+        "description": "Change device properties",
+        "title": "Configuration"
+      }
+    }
+  }
+}

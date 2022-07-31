@@ -1,0 +1,10 @@
+codecov
+coverage
+pytest
+pytest-cov
+pytest-homeassistant-custom-component
+pre-commit
+pytest_httpx
+
+async_upnp_client
+xmltodict
