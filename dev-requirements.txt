@@ -6,5 +6,6 @@ pytest-homeassistant-custom-component
 pre-commit
 pytest_httpx
 
+aiohttp_cors
 async_upnp_client
 xmltodict

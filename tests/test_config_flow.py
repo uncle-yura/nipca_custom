@@ -136,6 +136,7 @@ async def test_flow_config_creates_config_entry(hass):
         "description_placeholders": None,
         "options": {},
         "result": ANY,
+        "context": {"source": "config"},
     }
     assert expected == result
 
