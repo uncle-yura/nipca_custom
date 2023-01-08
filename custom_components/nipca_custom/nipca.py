@@ -1,6 +1,7 @@
-from asyncio import CancelledError
+import xmltodict
 import logging
 
+from asyncio import CancelledError
 from anyio import ClosedResourceError
 from async_upnp_client.profiles.profile import UpnpProfileDevice
 from homeassistant.const import (
@@ -17,7 +18,6 @@ from homeassistant.const import (
 from homeassistant.core import HassJob
 from homeassistant.helpers.httpx_client import get_async_client
 from httpx import BasicAuth, DigestAuth, ReadTimeout, Timeout
-import xmltodict
 
 from .const import (
     ASYNC_TIMEOUT,

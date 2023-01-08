@@ -1,8 +1,9 @@
 """Tests for the binary sensor module."""
 import asyncio
-from datetime import timedelta
 import logging
+import pytest
 
+from datetime import timedelta
 from homeassistant.const import (
     CONF_AUTHENTICATION,
     CONF_NAME,
@@ -249,6 +250,7 @@ def test_get_binary_sensors():
     ]
 
 
+@pytest.mark.asyncio
 async def test_binary_sensor_state(httpx_mock, hass):
     """Test binary sensors state update."""
     httpx_mock.add_response(url=TEST_URL, text=URL_INFO_LINES)

@@ -5,6 +5,7 @@ pytest-cov
 pytest-homeassistant-custom-component
 pre-commit
 pytest_httpx
+pytest-asyncio
 
 aiohttp_cors
 async_upnp_client

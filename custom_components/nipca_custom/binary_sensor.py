@@ -94,7 +94,7 @@ class NipcaMotionSensor(CoordinatorEntity, BinarySensorEntity):
         """Return a unique_id for this entity."""
         return "_".join(
             [
-                self._device._attributes.get("macaddr","").replace(".", "_"),
+                self._device._attributes.get("macaddr", "").replace(".", "_"),
                 self._name,
                 "sensor",
             ]
@@ -103,7 +103,9 @@ class NipcaMotionSensor(CoordinatorEntity, BinarySensorEntity):
     @property
     def name(self):
         """Return the name of the sensor."""
-        return " ".join([self._device._attributes.get("name",""), self._name, "sensor"])
+        return " ".join(
+            [self._device._attributes.get("name", ""), self._name, "sensor"]
+        )
 
     @property
     def is_on(self):

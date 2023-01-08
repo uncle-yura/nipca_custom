@@ -1,7 +1,8 @@
 """Tests for the config flow."""
 import re
-from unittest.mock import ANY, patch
+import pytest
 
+from unittest.mock import ANY, patch
 from homeassistant.const import (
     CONF_AUTHENTICATION,
     CONF_NAME,
@@ -27,6 +28,7 @@ from tests.conftest import TEST_URL, TEST_URL_PATTERN
 from tests.test_binary_sensor import URL_INFO_LINES
 
 
+@pytest.mark.asyncio
 async def test_validate_auth_valid(httpx_mock, hass):
     """Test no exception is raised for a valid path."""
     httpx_mock.add_response(url=TEST_URL, text=URL_INFO_LINES)
@@ -35,6 +37,7 @@ async def test_validate_auth_valid(httpx_mock, hass):
     assert response is True
 
 
+@pytest.mark.asyncio
 async def test_validate_auth_invalid(httpx_mock, hass):
     """Test no exception is raised for a valid path."""
     httpx_mock.add_response(url=TEST_URL, status_code=404)
@@ -42,6 +45,7 @@ async def test_validate_auth_invalid(httpx_mock, hass):
     assert response is False
 
 
+@pytest.mark.asyncio
 @patch("custom_components.nipca_custom.config_flow.DLinkUPNPProfile.async_discover")
 async def test_flow_user_init(async_discover, hass):
     """Test the initialization of the form in the first step of the config flow."""
@@ -65,6 +69,7 @@ async def test_flow_user_init(async_discover, hass):
     assert CONF_URL in result["data_schema"].schema
 
 
+@pytest.mark.asyncio
 async def test_flow_auth_form(hass):
     """Test the initialization of the form in the second step of the config flow."""
     result = await hass.config_entries.flow.async_init(
@@ -83,6 +88,7 @@ async def test_flow_auth_form(hass):
     assert expected == result
 
 
+@pytest.mark.asyncio
 @patch("custom_components.nipca_custom.config_flow.is_valid_auth")
 async def test_flow_auth_invalid(is_valid_auth, hass):
     """Test errors populated when auth is invalid."""
@@ -97,6 +103,7 @@ async def test_flow_auth_invalid(is_valid_auth, hass):
     assert {"base": "invalid_auth"} == result["errors"]
 
 
+@pytest.mark.asyncio
 async def test_flow_config_form(hass):
     """Test the initialization of the form in the third step of the config flow."""
     result = await hass.config_entries.flow.async_init(
@@ -115,6 +122,7 @@ async def test_flow_config_form(hass):
     assert expected == result
 
 
+@pytest.mark.asyncio
 async def test_flow_config_creates_config_entry(hass):
     """Test the config entry is successfully created."""
     config_flow.NipcaConfigFlow.data = {CONF_NAME: DEFAULT_NAME}
@@ -141,6 +149,7 @@ async def test_flow_config_creates_config_entry(hass):
     assert expected == result
 
 
+@pytest.mark.asyncio
 async def test_options_flow_init(httpx_mock, hass):
     """Test config flow options."""
     httpx_mock.add_response(url=TEST_URL, text=URL_INFO_LINES)

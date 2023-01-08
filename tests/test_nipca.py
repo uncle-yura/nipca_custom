@@ -1,7 +1,8 @@
 """Tests for the nipca module."""
-from asyncio import CancelledError
 import re
+import pytest
 
+from asyncio import CancelledError
 from anyio import ClosedResourceError
 from homeassistant.const import (
     CONF_AUTHENTICATION,
@@ -14,7 +15,6 @@ from homeassistant.const import (
     HTTP_DIGEST_AUTHENTICATION,
 )
 from httpx import ReadTimeout
-import pytest
 
 from custom_components.nipca_custom.const import (
     COMMON_INFO,
@@ -33,6 +33,7 @@ from tests.test_binary_sensor import (
 )
 
 
+@pytest.mark.asyncio
 async def test__get_attributes_raise(httpx_mock, hass):
     """Test nipca _get_attribytes raise error."""
     httpx_mock.add_response(url=TEST_URL, text=URL_INFO_LINES)
@@ -47,6 +48,7 @@ async def test__get_attributes_raise(httpx_mock, hass):
     assert await device._get_attributes(COMMON_INFO) == {}
 
 
+@pytest.mark.asyncio
 async def test_nipca_listener_cancel(httpx_mock, hass):
     """Test event listener cancellation."""
     httpx_mock.add_response(url=TEST_URL, text=URL_INFO_LINES)
@@ -74,6 +76,7 @@ async def test_nipca_listener_cancel(httpx_mock, hass):
     "error",
     [CancelledError, ConnectionError, ClosedResourceError, TimeoutError, ReadTimeout],
 )
+@pytest.mark.asyncio
 async def test_nipca_listener_errors(error, httpx_mock, hass):
     """Test event listener cancellation."""
     httpx_mock.add_response(url=TEST_URL, text=URL_INFO_LINES)
