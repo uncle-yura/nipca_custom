@@ -1,5 +1,6 @@
 import logging
-from typing import Any, Dict, Optional
+import voluptuous as vol
+
 
 from homeassistant import config_entries, core
 from homeassistant.const import (
@@ -15,7 +16,7 @@ from homeassistant.const import (
 )
 from homeassistant.core import callback
 from homeassistant.helpers import config_validation as cv
-import voluptuous as vol
+from typing import Any, Dict, Optional
 
 from .const import DEFAULT_NAME, DOMAIN, SCAN_INTERVAL, STEP_CONFIG, STILL_IMAGE
 from .nipca import DLinkUPNPProfile, NipcaDevice

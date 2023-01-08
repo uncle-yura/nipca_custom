@@ -1,7 +1,6 @@
 import logging
 import voluptuous as vol
 
-from typing import Callable
 from datetime import timedelta
 from homeassistant.helpers import config_validation as cv
 from homeassistant.components.binary_sensor import ENTITY_ID_FORMAT, BinarySensorEntity, PLATFORM_SCHEMA
@@ -27,6 +26,7 @@ from homeassistant.const import (
     HTTP_BASIC_AUTHENTICATION,
     HTTP_DIGEST_AUTHENTICATION,
 )
+from typing import Callable
 
 from .const import DEFAULT_NAME, DOMAIN, SCAN_INTERVAL
 from .nipca import NipcaDevice
