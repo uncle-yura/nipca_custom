@@ -116,7 +116,8 @@ class NipcaDevice:
         return False
 
     async def update_info(self):
-        self.url = await self.get_presentation_url()
+        if not self.url:
+            self.url = await self.get_presentation_url()
 
         self._attributes.update(await self._get_attributes(COMMON_INFO))
         self._attributes.update(await self._get_attributes(STREAM_INFO))

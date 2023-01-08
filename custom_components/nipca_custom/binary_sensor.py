@@ -1,33 +1,56 @@
-from datetime import timedelta
 import logging
+import voluptuous as vol
 
-from homeassistant.components.binary_sensor import ENTITY_ID_FORMAT, BinarySensorEntity
+from typing import Callable
+from datetime import timedelta
+from homeassistant.helpers import config_validation as cv
+from homeassistant.components.binary_sensor import ENTITY_ID_FORMAT, BinarySensorEntity, PLATFORM_SCHEMA
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import CONF_SCAN_INTERVAL, STATE_ON, STATE_UNKNOWN
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity import async_generate_entity_id
 from homeassistant.helpers.update_coordinator import (
     CoordinatorEntity,
     DataUpdateCoordinator,
 )
+from homeassistant.helpers.typing import ConfigType, DiscoveryInfoType
+from homeassistant.const import (
+    CONF_SCAN_INTERVAL,
+    STATE_ON,
+    STATE_UNKNOWN,
+    CONF_AUTHENTICATION,
+    CONF_NAME,
+    CONF_PASSWORD,
+    CONF_SCAN_INTERVAL,
+    CONF_URL,
+    CONF_USERNAME,
+    CONF_VERIFY_SSL,
+    HTTP_BASIC_AUTHENTICATION,
+    HTTP_DIGEST_AUTHENTICATION,
+)
 
-from .const import DOMAIN
+from .const import DEFAULT_NAME, DOMAIN, SCAN_INTERVAL
 from .nipca import NipcaDevice
 
 _LOGGER = logging.getLogger(__name__)
 
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
+    {
+        vol.Required(CONF_USERNAME): cv.string,
+        vol.Required(CONF_PASSWORD): cv.string,
+        vol.Optional(CONF_AUTHENTICATION, default=HTTP_BASIC_AUTHENTICATION): vol.In(
+            [HTTP_BASIC_AUTHENTICATION, HTTP_DIGEST_AUTHENTICATION]
+        ),
+        vol.Optional(CONF_VERIFY_SSL, default=False): cv.boolean,
+        vol.Optional(CONF_SCAN_INTERVAL, default=SCAN_INTERVAL): cv.positive_int,
+        vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
+        vol.Required(CONF_URL): cv.string,
+    }
+)
 
-async def async_setup_entry(
-    hass: HomeAssistant,
-    config_entry: ConfigEntry,
-    async_add_entities,
-) -> None:
-    """Setup sensors from a config entry created in the integrations UI."""
-    config = hass.data[DOMAIN][config_entry.entry_id]
-    if config_entry.options:
-        config.update(config_entry.options)
 
-    device = NipcaDevice(hass, config)
+async def _setup_entities(
+    hass: HomeAssistant, device: NipcaDevice, config: ConfigEntry, async_add_entities: Callable
+):
     await device.update_info()
     device.create_listener_task(hass)
 
@@ -45,6 +68,31 @@ async def async_setup_entry(
         NipcaMotionSensor(hass, device, coordinator, sensor_name, sensor_class)
         for sensor_class, sensor_name in get_sensors(device._attributes)
     )
+
+
+async def async_setup_entry(
+    hass: HomeAssistant,
+    config_entry: ConfigEntry,
+    async_add_entities: Callable,
+) -> None:
+    """Setup sensors from a config entry created in the integrations UI."""
+    config = hass.data[DOMAIN][config_entry.entry_id]
+    if config_entry.options:
+        config.update(config_entry.options)
+    device = NipcaDevice(hass, config)
+    await _setup_entities(hass, device, config, async_add_entities)
+
+
+async def async_setup_platform(
+    hass: HomeAssistant,
+    config: ConfigType,
+    async_add_entities: Callable,
+    discovery_info: DiscoveryInfoType | None = None,
+) -> None:
+    """Set up the sensor platform."""
+    device = NipcaDevice(hass, config)
+    device.url = config.get(CONF_URL, "")
+    await _setup_entities(hass, device, config, async_add_entities)
 
 
 def get_sensors(attributes: dict) -> list:
@@ -103,9 +151,7 @@ class NipcaMotionSensor(CoordinatorEntity, BinarySensorEntity):
     @property
     def name(self):
         """Return the name of the sensor."""
-        return " ".join(
-            [self._device._attributes.get("name", ""), self._name, "sensor"]
-        )
+        return " ".join([self._device._attributes.get("name", ""), self._name, "sensor"])
 
     @property
     def is_on(self):
@@ -118,10 +164,7 @@ class NipcaMotionSensor(CoordinatorEntity, BinarySensorEntity):
     @property
     def state(self):
         """Return the state of the binary sensor."""
-        if (
-            self._device.motion_detection_enabled
-            and self._name in self._coordinator.data
-        ):
+        if self._device.motion_detection_enabled and self._name in self._coordinator.data:
             return self._coordinator.data[self._name]
         else:
             return STATE_UNKNOWN

@@ -31,6 +31,23 @@ Most likely, other NIPСA cameras are also supported
 * D-Link DCS-6513 *[claimed2]* and lot mote *[claimed3]*
 * D-Link DCS-P6000LH *[implemented1]* (alternative location for motion config)
 
+## Manual setup
+
+To configure the component without using UPnP, use the following config:
+```
+binary_sensor:
+- platform: nipca_custom
+  username: "xxx"
+  password: "xxx"
+  url: "http://192.168.x.x/"
+```
+
+Optional:
+* authentication: `basic` or `digest`, by default `basic`
+* verify_ssl: `true` or `false`, by default `false`
+* scan_interval: integer, by default 10 seconds
+* name: string, config name, by default `NIPCA Custom`
+
 ## Running Tests
 
 To run the test suite create a virtualenv (I recommend checking out [pyenv](https://github.com/pyenv/pyenv) and [pyenv-virtualenv](https://github.com/pyenv/pyenv-virtualenv) for this) and install the test requirements.
