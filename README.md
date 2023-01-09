@@ -48,6 +48,16 @@ Optional:
 * scan_interval: integer, by default 10 seconds
 * name: string, config name, by default `NIPCA Custom`
 
+## Debug component
+
+To debug the component, use the following config:
+```
+logger:
+  default: error
+  logs:
+    custom_components.nipca_custom: debug
+```
+
 ## Running Tests
 
 To run the test suite create a virtualenv (I recommend checking out [pyenv](https://github.com/pyenv/pyenv) and [pyenv-virtualenv](https://github.com/pyenv/pyenv-virtualenv) for this) and install the test requirements.

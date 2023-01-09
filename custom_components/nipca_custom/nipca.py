@@ -132,7 +132,7 @@ class NipcaDevice:
         try:
             response = await self.request(url)
         except ConnectionError as err:
-            _LOGGER.error("NIPCA ConnectionError: %s", err)
+            _LOGGER.debug("NIPCA ConnectionError: %s, %s", err, url)
         else:
             for l in response.iter_lines():
                 result.update(self._parse_line(l))
