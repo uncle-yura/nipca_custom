@@ -1,7 +1,7 @@
 # NIPCA Custom Component for Home Assistant
 
 [![](https://img.shields.io/github/license/uncle-yura/nipca_custom?style=for-the-badge)](LICENSE)
-[![](https://img.shields.io/github/workflow/status/uncle-yura/nipca_custom/Python%20package?style=for-the-badge)](https://github.com/uncle-yura/nipca_custom/actions)
+[![](https://img.shields.io/github/actions/workflow/status/uncle-yura/nipca_custom/pythonpackage.yaml?branch=main&style=for-the-badge)](https://github.com/uncle-yura/nipca_custom/actions)
 
 ## About
 
