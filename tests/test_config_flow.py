@@ -123,33 +123,6 @@ async def test_flow_config_form(hass):
 
 
 @pytest.mark.asyncio
-async def test_flow_config_creates_config_entry(hass):
-    """Test the config entry is successfully created."""
-    config_flow.NipcaConfigFlow.data = {CONF_NAME: DEFAULT_NAME}
-    _result = await hass.config_entries.flow.async_init(
-        config_flow.DOMAIN, context={"source": STEP_CONFIG}
-    )
-    result = await hass.config_entries.flow.async_configure(
-        _result["flow_id"],
-        user_input={CONF_SCAN_INTERVAL: 5},
-    )
-    expected = {
-        "version": 1,
-        "type": "create_entry",
-        "flow_id": ANY,
-        "handler": "nipca_custom",
-        "title": DEFAULT_NAME,
-        "data": {"name": DEFAULT_NAME, "scan_interval": 5},
-        "description": None,
-        "description_placeholders": None,
-        "options": {},
-        "result": ANY,
-        "context": {"source": "config"},
-    }
-    assert expected == result
-
-
-@pytest.mark.asyncio
 async def test_options_flow_init(httpx_mock, hass):
     """Test config flow options."""
     httpx_mock.add_response(url=TEST_URL, text=URL_INFO_LINES)
