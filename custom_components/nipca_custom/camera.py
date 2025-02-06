@@ -9,7 +9,7 @@ from homeassistant.const import (
 )
 from homeassistant.helpers.entity import DeviceInfo
 
-from .const import DOMAIN
+from .const import NIPCA_DOMAIN
 from .nipca import NipcaDevice
 
 
@@ -19,7 +19,7 @@ async def async_setup_entry(
     async_add_entities,
 ):
     """Setup sensors from a config entry created in the integrations UI."""
-    config = hass.data[DOMAIN][config_entry.entry_id]
+    config = hass.data[NIPCA_DOMAIN][config_entry.entry_id]
     if config_entry.options:
         config.update(config_entry.options)
 
@@ -39,7 +39,7 @@ async def async_setup_entry(
                 unique_id=config_entry.entry_id,
                 device_info=DeviceInfo(
                     name=config[CONF_NAME],
-                    identifiers={(DOMAIN, config_entry.entry_id)},
+                    identifiers={(NIPCA_DOMAIN, config_entry.entry_id)},
                 ),
             )
         ]

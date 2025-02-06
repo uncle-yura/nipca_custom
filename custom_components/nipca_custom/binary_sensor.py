@@ -19,7 +19,6 @@ from homeassistant.const import (
     CONF_AUTHENTICATION,
     CONF_NAME,
     CONF_PASSWORD,
-    CONF_SCAN_INTERVAL,
     CONF_URL,
     CONF_USERNAME,
     CONF_VERIFY_SSL,
@@ -28,7 +27,7 @@ from homeassistant.const import (
 )
 from typing import Callable
 
-from .const import DEFAULT_NAME, DOMAIN, SCAN_INTERVAL
+from .const import NIPCA_DEFAULT_NAME, NIPCA_DOMAIN, NIPCA_SCAN_INTERVAL
 from .nipca import NipcaDevice
 
 _LOGGER = logging.getLogger(__name__)
@@ -41,8 +40,8 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
             [HTTP_BASIC_AUTHENTICATION, HTTP_DIGEST_AUTHENTICATION]
         ),
         vol.Optional(CONF_VERIFY_SSL, default=False): cv.boolean,
-        vol.Optional(CONF_SCAN_INTERVAL, default=SCAN_INTERVAL): cv.positive_int,
-        vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
+        vol.Optional(CONF_SCAN_INTERVAL, default=timedelta(seconds=NIPCA_SCAN_INTERVAL)): cv.time_period,
+        vol.Optional(CONF_NAME, default=NIPCA_DEFAULT_NAME): cv.string,
         vol.Required(CONF_URL): cv.string,
     }
 )
@@ -59,7 +58,7 @@ async def _setup_entities(
         _LOGGER,
         name="motion_sensor",
         update_method=device.update_motion_sensors,
-        update_interval=timedelta(seconds=config.get(CONF_SCAN_INTERVAL)),
+        update_interval=config.get(CONF_SCAN_INTERVAL),
     )
     device._coordinator = coordinator
     await coordinator.async_refresh()
@@ -76,7 +75,7 @@ async def async_setup_entry(
     async_add_entities: Callable,
 ) -> None:
     """Setup sensors from a config entry created in the integrations UI."""
-    config = hass.data[DOMAIN][config_entry.entry_id]
+    config = hass.data[NIPCA_DOMAIN][config_entry.entry_id]
     if config_entry.options:
         config.update(config_entry.options)
     device = NipcaDevice(hass, config)

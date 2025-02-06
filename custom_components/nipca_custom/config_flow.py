@@ -1,3 +1,4 @@
+from datetime import timedelta
 import logging
 import voluptuous as vol
 
@@ -18,7 +19,7 @@ from homeassistant.core import callback
 from homeassistant.helpers import config_validation as cv
 from typing import Any, Dict, Optional
 
-from .const import DEFAULT_NAME, DOMAIN, SCAN_INTERVAL, STEP_CONFIG, STILL_IMAGE
+from .const import NIPCA_DEFAULT_NAME, NIPCA_DOMAIN, NIPCA_SCAN_INTERVAL, STEP_CONFIG, STILL_IMAGE
 from .nipca import DLinkUPNPProfile, NipcaDevice
 
 _LOGGER = logging.getLogger(__name__)
@@ -46,7 +47,7 @@ def get_config_schema(scan_interval):
 def get_discovery_schema(resps):
     return vol.Schema(
         {
-            vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
+            vol.Optional(CONF_NAME, default=NIPCA_DEFAULT_NAME): cv.string,
             vol.Required(CONF_URL): vol.In([resp["LOCATION"] for resp in resps]),
         }
     )
@@ -63,7 +64,7 @@ async def is_valid_auth(auth_data: dict, data: dict, hass: core.HassJob):
     return True
 
 
-class NipcaConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
+class NipcaConfigFlow(config_entries.ConfigFlow, domain=NIPCA_DOMAIN):
     """NIPCA config flow."""
 
     data: Optional[Dict[str, Any]]
@@ -102,21 +103,22 @@ class NipcaConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             self.data.update(user_input)
             return self.async_create_entry(title=self.data[CONF_NAME], data=self.data)
 
-        config_schema = get_config_schema(SCAN_INTERVAL)
+        config_schema = get_config_schema(NIPCA_SCAN_INTERVAL)
         return self.async_show_form(step_id=STEP_CONFIG, data_schema=config_schema)
 
     @staticmethod
     @callback
     def async_get_options_flow(config_entry):
         """Get the options flow for this handler."""
-        return OptionsFlowHandler(config_entry)
+        return OptionsFlowHandler()
 
 
 class OptionsFlowHandler(config_entries.OptionsFlow):
     """Handles options flow for the component."""
 
-    def __init__(self, config_entry: config_entries.ConfigEntry) -> None:
-        self.config_entry = config_entry
+    @property
+    def config_entry(self):
+        return self.hass.config_entries.async_get_entry(self.handler)
 
     async def async_step_init(
         self, user_input: Dict[str, Any] = None

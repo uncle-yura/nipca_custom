@@ -266,10 +266,13 @@ async def test_binary_sensor_state(httpx_mock, hass):
     httpx_mock.add_response(url=TEST_URL, text=URL_INFO_LINES)
     httpx_mock.add_response(url=COMMON_INFO.format(TEST_URL), text=COMMON_INFO_LINES)
     httpx_mock.add_response(url=STREAM_INFO.format(TEST_URL), text=STREAM_INFO_LINES)
-    httpx_mock.add_response(url=MOTION_INFO[0].format(TEST_URL), text=CONFIG_MOTION_INFO_LINES)
+    httpx_mock.add_response(
+        url=MOTION_INFO[0].format(TEST_URL), text=CONFIG_MOTION_INFO_LINES
+    )
     httpx_mock.add_response(
         url=NOTIFY_STREAM.format(TEST_URL),
         stream=IteratorStream([STREAM_LINES]),
+        is_reusable=True,
     )
 
     config = {

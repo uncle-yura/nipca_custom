@@ -1,8 +1,8 @@
 """pytest fixtures."""
 import pytest
 
-TEST_URL = "http://test"
-TEST_URL_PATTERN = r"http:\/\/test\/.*"
+TEST_URL = "http://test.local"
+TEST_URL_PATTERN = r"http:\/\/test\.local\/.*"
 
 
 @pytest.fixture(autouse=True)

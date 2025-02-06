@@ -17,9 +17,8 @@ from pytest_homeassistant_custom_component.common import MockConfigEntry
 
 from custom_components.nipca_custom import config_flow
 from custom_components.nipca_custom.const import (
-    DEFAULT_NAME,
-    DOMAIN,
-    SCAN_INTERVAL,
+    NIPCA_DOMAIN,
+    NIPCA_SCAN_INTERVAL,
     STEP_CONFIG,
     STILL_IMAGE,
 )
@@ -51,7 +50,7 @@ async def test_flow_user_init(async_discover, hass):
     """Test the initialization of the form in the first step of the config flow."""
     async_discover.return_value = [{"LOCATION": "test"}]
     result = await hass.config_entries.flow.async_init(
-        config_flow.DOMAIN, context={"source": "user"}
+        config_flow.NIPCA_DOMAIN, context={"source": "user"}
     )
     expected = {
         "data_schema": ANY,
@@ -62,6 +61,7 @@ async def test_flow_user_init(async_discover, hass):
         "last_step": None,
         "step_id": "user",
         "type": "form",
+        "preview": None,
     }
 
     assert expected == result
@@ -73,7 +73,7 @@ async def test_flow_user_init(async_discover, hass):
 async def test_flow_auth_form(hass):
     """Test the initialization of the form in the second step of the config flow."""
     result = await hass.config_entries.flow.async_init(
-        config_flow.DOMAIN, context={"source": "auth"}
+        config_flow.NIPCA_DOMAIN, context={"source": "auth"}
     )
     expected = {
         "data_schema": config_flow.AUTH_SCHEMA,
@@ -84,6 +84,7 @@ async def test_flow_auth_form(hass):
         "step_id": "auth",
         "last_step": None,
         "type": "form",
+        "preview": None,
     }
     assert expected == result
 
@@ -95,7 +96,7 @@ async def test_flow_auth_invalid(is_valid_auth, hass):
     is_valid_auth.return_value = False
     config_flow.NipcaConfigFlow.data = {}
     _result = await hass.config_entries.flow.async_init(
-        config_flow.DOMAIN, context={"source": "auth"}
+        config_flow.NIPCA_DOMAIN, context={"source": "auth"}
     )
     result = await hass.config_entries.flow.async_configure(
         _result["flow_id"], user_input={CONF_USERNAME: "bad", CONF_PASSWORD: "bad"}
@@ -107,10 +108,10 @@ async def test_flow_auth_invalid(is_valid_auth, hass):
 async def test_flow_config_form(hass):
     """Test the initialization of the form in the third step of the config flow."""
     result = await hass.config_entries.flow.async_init(
-        config_flow.DOMAIN, context={"source": STEP_CONFIG}
+        config_flow.NIPCA_DOMAIN, context={"source": STEP_CONFIG}
     )
     expected = {
-        "data_schema": config_flow.get_config_schema(SCAN_INTERVAL),
+        "data_schema": config_flow.get_config_schema(NIPCA_SCAN_INTERVAL),
         "description_placeholders": None,
         "errors": None,
         "flow_id": ANY,
@@ -118,6 +119,7 @@ async def test_flow_config_form(hass):
         "step_id": STEP_CONFIG,
         "last_step": None,
         "type": "form",
+        "preview": None,
     }
     assert expected == result
 
@@ -125,11 +127,11 @@ async def test_flow_config_form(hass):
 @pytest.mark.asyncio
 async def test_options_flow_init(httpx_mock, hass):
     """Test config flow options."""
-    httpx_mock.add_response(url=TEST_URL, text=URL_INFO_LINES)
-    httpx_mock.add_response(url=re.compile(TEST_URL_PATTERN))
+    httpx_mock.add_response(url=TEST_URL, text=URL_INFO_LINES, is_reusable=True)
+    httpx_mock.add_response(url=re.compile(TEST_URL_PATTERN), is_reusable=True)
 
     config_entry = MockConfigEntry(
-        domain=DOMAIN,
+        domain=NIPCA_DOMAIN,
         unique_id="test_unique_id",
         data={
             CONF_URL: TEST_URL,
@@ -165,4 +167,4 @@ async def test_options_flow_init(httpx_mock, hass):
 
     # Unload the entry and verify that the data has been removed
     assert await hass.config_entries.async_unload(config_entry.entry_id)
-    assert config_entry.entry_id not in hass.data[DOMAIN]
+    assert config_entry.entry_id not in hass.data[NIPCA_DOMAIN]

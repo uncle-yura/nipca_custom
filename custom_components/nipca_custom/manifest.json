@@ -7,5 +7,5 @@
   "documentation": "https://github.com/uncle-yura/nipca_custom",
   "iot_class": "local_polling",
   "requirements": ["async_upnp_client", "xmltodict"],
-  "version": "2.0.2"
+  "version": "2.0.3"
 }

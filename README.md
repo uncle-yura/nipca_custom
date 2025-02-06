@@ -70,7 +70,7 @@ After the test dependencies are installed you can simply invoke `pytest` to run
 the test suite.
 
 ```bash
-$ pytest
+$ pytest --asyncio-mode=auto 
 Test session starts (platform: darwin, Python 3.9.7, pytest 7.1.2, pytest-sugar 0.9.5)
 rootdir: /Users/work/WorkProjects/hass_nipca, configfile: setup.cfg, testpaths: tests
 plugins: anyio-3.6.1, xdist-2.5.0, freezegun-0.4.2, forked-1.4.0, requests-mock-1.9.2, homeassistant-custom-component-0.11.2, sugar-0.9.5, timeout-2.1.0, test-groups-1.0.3, respx-0.19.2, aiohttp-0.3.0, socket-0.5.1, cov-3.0.0, httpx-0.21.0

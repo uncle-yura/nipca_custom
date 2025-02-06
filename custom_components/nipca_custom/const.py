@@ -1,6 +1,6 @@
-DOMAIN = "nipca_custom"
-DEFAULT_NAME = "NIPCA Custom"
-SCAN_INTERVAL = 10
+NIPCA_DOMAIN = "nipca_custom"
+NIPCA_DEFAULT_NAME = "NIPCA Custom"
+NIPCA_SCAN_INTERVAL = 10
 ASYNC_TIMEOUT = 10
 
 DATA_NIPCA = "nipca.{}"
